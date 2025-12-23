@@ -1,0 +1,28 @@
+{
+  "name": "notice_management",
+  "version": "1.0.0",
+  "description": "This project is a MERN (MongoDB, Express, React, Node.js) fullstack application built for managing notices. The application is designed to meet the technical requirements provided in the task description, including responsive front-end components, backend API for notice CRUD operations, and deployment to a cloud platform.",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shakil-ahmed-billal/Notice-Management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+   "type": "module" ,
+  "bugs": {
+    "url": "https://github.com/shakil-ahmed-billal/Notice-Management/issues"
+  },
+  "homepage": "https://github.com/shakil-ahmed-billal/Notice-Management#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "morgan": "^1.10.1"
+  }
+}
