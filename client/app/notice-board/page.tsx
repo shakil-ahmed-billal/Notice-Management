@@ -36,79 +36,91 @@ import {
   CalendarIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import useAllNotice from '@/hooks/getAllNotice';
 
-const dummyNotices = [
-  {
-    id: 1,
-    title: 'Office closed on Friday for maintenance.',
-    noticeType: 'General / Company-Wide',
-    department: 'All Department',
-    publishedOn: '15-Jun-2025',
-    status: 'Published',
-  },
-  {
-    id: 2,
-    title: 'Eid al-Fitr holiday schedule.',
-    noticeType: 'Holiday & Event',
-    department: 'Finance',
-    publishedOn: '15-Jun-2025',
-    status: 'Published',
-  },
-  {
-    id: 3,
-    title: 'Updated code of conduct policy',
-    noticeType: 'HR & Policy Update',
-    department: 'Sales Team',
-    publishedOn: '15-Jun-2025',
-    status: 'Published',
-  },
-  {
-    id: 4,
-    title: 'Payroll for October will be processed on 28th',
-    noticeType: 'Finance & Payroll',
-    department: 'Web Team',
-    publishedOn: '15-Jun-2025',
-    status: 'Published',
-  },
-  {
-    id: 5,
-    title: 'System update scheduled for 30 Oct (9:00-11:00 PM)',
-    noticeType: 'IT / System Maintenance',
-    department: 'Database Team',
-    publishedOn: '15-Jun-2025',
-    status: 'Published',
-  },
-  {
-    id: 6,
-    title: 'Design team sprint review moved to Tuesday.',
-    noticeType: 'Department / Team',
-    department: 'Admin',
-    publishedOn: '15-Jun-2025',
-    status: 'Published',
-  },
-  {
-    id: 7,
-    title: 'Unauthorized absence recorded on 18 Oct 2025',
-    noticeType: 'Warning / Disciplinary',
-    department: 'Individual',
-    publishedOn: '15-Jun-2025',
-    status: 'Unpublished',
-  },
-  {
-    id: 8,
-    title: 'Office closed today due to severe weather',
-    noticeType: 'Emergency / Urgent',
-    department: 'HR',
-    publishedOn: '15-Jun-2025',
-    status: 'Draft',
-  },
-];
+interface Notice {
+  id: string;
+  title: string;
+  noticeType: string;
+  department: string;
+  publishedOn: string;
+  status: 'Published' | 'Unpublished' | 'Draft';
+}
+
+
+// const allNotice = [
+//   {
+//     id: 1,
+//     title: 'Office closed on Friday for maintenance.',
+//     noticeType: 'General / Company-Wide',
+//     department: 'All Department',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Published',
+//   },
+//   {
+//     id: 2,
+//     title: 'Eid al-Fitr holiday schedule.',
+//     noticeType: 'Holiday & Event',
+//     department: 'Finance',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Published',
+//   },
+//   {
+//     id: 3,
+//     title: 'Updated code of conduct policy',
+//     noticeType: 'HR & Policy Update',
+//     department: 'Sales Team',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Published',
+//   },
+//   {
+//     id: 4,
+//     title: 'Payroll for October will be processed on 28th',
+//     noticeType: 'Finance & Payroll',
+//     department: 'Web Team',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Published',
+//   },
+//   {
+//     id: 5,
+//     title: 'System update scheduled for 30 Oct (9:00-11:00 PM)',
+//     noticeType: 'IT / System Maintenance',
+//     department: 'Database Team',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Published',
+//   },
+//   {
+//     id: 6,
+//     title: 'Design team sprint review moved to Tuesday.',
+//     noticeType: 'Department / Team',
+//     department: 'Admin',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Published',
+//   },
+//   {
+//     id: 7,
+//     title: 'Unauthorized absence recorded on 18 Oct 2025',
+//     noticeType: 'Warning / Disciplinary',
+//     department: 'Individual',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Unpublished',
+//   },
+//   {
+//     id: 8,
+//     title: 'Office closed today due to severe weather',
+//     noticeType: 'Emergency / Urgent',
+//     department: 'HR',
+//     publishedOn: '15-Jun-2025',
+//     status: 'Draft',
+//   },
+// ];
 
 export default function NoticeBoard() {
-  const [notices, setNotices] = useState(dummyNotices);
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const { data: allNotice } = useAllNotice();
+  const [notices, setNotices] = useState(allNotice || []);
 
   const getDepartmentColor = (dept: string) => {
     const colors: Record<string, string> = {
@@ -232,7 +244,7 @@ export default function NoticeBoard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {notices.map((notice) => (
+            {notices.map((notice: Notice) => (
               <TableRow key={notice.id}>
                 <TableCell>
                   <Checkbox />
