@@ -1,53 +1,116 @@
 # MERN Fullstack Project: Notice Management System
 
-## Project Overview
+## 🔗 Live URLs
 
-This project is a MERN (MongoDB, Express, React, Node.js) fullstack application built for managing notices. The application is designed to meet the technical requirements provided in the task description, including responsive front-end components, backend API for notice CRUD operations, and deployment to a cloud platform.
+- **Frontend (Client Live URL):**  
+  https://notice-management-ten.vercel.app/notice-board
 
-### Features:
-- **Create Notice Form**: Allows users to create notices with validation.
-  - "Notice Type" as a dropdown.
-  - Data is persisted in the database after submission.
-  - Upon successful submission, a "Notice Published Successfully" popup is displayed.
-  
-- **Notice Listing Page**: Displays a list of notices fetched from the backend API.
-  - Includes a toggle to change the status of each notice (published/unpublished).
-  - Pagination is implemented for listing notices.
+- **Backend (API Live URL):**  
+  https://notice-management-gf6w.vercel.app/
 
-- **API Endpoints**:
-  - **POST** `/api/v1/notices`: Create a new notice.
-  - **GET** `/api/v1/notices`: Fetch all notices, with filtering by active or draft status.
-  - **PUT** `/api/v1/notices/:id`: Update the status of a notice (published/unpublished).
-  - **GET** `/api/v1/notices/:id`: View a single notice (optional).
+- **GitHub Repository:**  
+  https://github.com/shakil-ahmed-billal/Notice-Management.git
 
-- **MongoDB**: Used for storing notice data, structured in a way to support easy filtering and updating.
+---
 
-## Tech Stack
+## 📌 Project Overview
 
-- **Frontend**:
-  - React.js
-  - Next.js
-  - Tailwind CSS
-  - Form Validation (React Hook Form or similar)
+The **Notice Management System** is a MERN (MongoDB, Express.js, React.js, Node.js) fullstack web application designed to manage organizational notices efficiently.
 
-- **Backend**:
-  - Node.js
-  - Express.js
-  - MongoDB (Mongoose ODM)
+It allows administrators to create, publish, filter, search, and paginate notices while ensuring a clean and responsive user interface. The project follows modern fullstack best practices and meets all technical submission requirements.
 
-- **Deployment**:
-  - Vercel/Render/Railway (Frontend + Backend)
+### Core Features
 
-## Setup Instructions
+- Create notices with validation
+- Publish, unpublish, and draft notice status management
+- Paginated notice listing (latest notices shown first)
+- Filter notices by:
+  - Department
+  - Status
+  - Search keyword
+- Responsive UI built with modern components
+- RESTful API with pagination and filtering
+- Clean separation of frontend and backend
+
+---
+
+## 🚀 Key Functionalities
+
+### 📄 Notice Creation
+- Create notice using a structured form
+- Dropdown-based notice type selection
+- Data is stored securely in MongoDB
+- Success confirmation modal after publishing
+
+### 📋 Notice Listing
+- Fetch notices from backend API
+- Pagination support
+- Toggle notice status (Published / Unpublished)
+- Search by title
+- Filter by department and status
+
+### 🔌 API Endpoints
+
+| Method | Endpoint | Description |
+|------|---------|------------|
+| POST | `/api/v1/notices` | Create a new notice |
+| GET | `/api/v1/notices` | Get all notices with pagination & filters |
+| GET | `/api/v1/notices/:id` | Get a single notice |
+| PUT | `/api/v1/notices/:id` | Update notice status |
+| DELETE | `/api/v1/notices/:id` | Delete notice (optional) |
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+- Next.js (App Router)
+- React.js
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- React Query (TanStack Query)
+- React Hook Form
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose ODM
+
+### Deployment
+- **Frontend:** Vercel
+- **Backend:** Vercel
+
+---
+
+## ⚙️ Installation & Setup
 
 ### Prerequisites
-Make sure you have the following installed:
-- **Node.js** (v14.x or above)
-- **MongoDB** (either local or cloud instance)
 
-### Installation Steps
+Make sure you have installed:
 
-#### Clone the Repository
+- Node.js (v16+ recommended)
+- npm or yarn
+- MongoDB (Local or MongoDB Atlas)
+
+---
+
+## 📥 Clone the Repository
+
 ```bash
-git clone <https://github.com/shakil-ahmed-billal/Notice-Management>
-cd <Notice-Management>
+git clone https://github.com/shakil-ahmed-billal/Notice-Management.git
+cd Notice-Management
+
+
+## 📦 Install Dependencies server
+```
+PORT=8000
+MONGO_URI=mongodb_uri
+```
+
+
+## 📦 Install Dependencies clien
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
