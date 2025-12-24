@@ -18,7 +18,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://pms-tau-ten.vercel.app",
+      "https://notice-management-ten.vercel.app",
     ],
     credentials: true,
   })
