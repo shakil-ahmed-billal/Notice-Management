@@ -84,7 +84,7 @@ It allows administrators to create, publish, filter, search, and paginate notice
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 
@@ -96,21 +96,20 @@ Make sure you have installed:
 
 ---
 
-## 📥 Clone the Repository
+## Clone the Repository
 
 ```bash
 git clone https://github.com/shakil-ahmed-billal/Notice-Management.git
 cd Notice-Management
-
-
-## 📦 Install Dependencies server
 ```
+
+## Create .env file for server
+```bash
 PORT=8000
 MONGO_URI=mongodb_uri
 ```
 
-
-## 📦 Install Dependencies clien
-```
+## Create .env file for client
+```bash
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
