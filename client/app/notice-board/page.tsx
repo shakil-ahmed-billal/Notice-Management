@@ -120,8 +120,8 @@ export default function NoticeBoard() {
   const [filterStatus, setFilterStatus] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const { data: allNotice } = useAllNotice();
-  const [notices, setNotices] = useState(allNotice || []);
 
+console.log("all data",allNotice)
   const getDepartmentColor = (dept: string) => {
     const colors: Record<string, string> = {
       'All Department': 'text-blue-600',
@@ -244,7 +244,7 @@ export default function NoticeBoard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {notices.map((notice: Notice) => (
+            {allNotice?.map((notice: Notice) => (
               <TableRow key={notice.id}>
                 <TableCell>
                   <Checkbox />

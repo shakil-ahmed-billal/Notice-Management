@@ -12,8 +12,7 @@ const useAllNotice = () => {
         queryKey: ['user'],
         queryFn: async () => {
             const { data } = await axiosPublic(`/api/v1/notices`);
-            console.log(data);
-            return data
+            return data.data
         }
     })
     return { data, refetch, isLoading , isPending};
