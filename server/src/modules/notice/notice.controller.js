@@ -23,24 +23,55 @@ const noticeCreate = async(req, res) => {
     }
 };
 
-const getAllNotice = async(req, res) => {
+export const getAllNotice = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    console.log("name")
-    try{
-        const notices = await Notice.find();
-        res.status(200).send({
-            success: true,
-            message: "Notices fetched successfully",
-            data: notices
-        });
+    const { filterDepartment, filterStatus, searchTerm } = req.query;
 
-    }catch(error){
-        res.status(500).send({
-            success: false,
-            message: error.message
-        });
+    // 🔎 Dynamic filter object
+    let query = {};
+
+    if (filterDepartment) {
+      query.position = filterDepartment;
     }
-}
+
+    if (filterStatus) {
+      query.status = filterStatus;
+    }
+
+    if (searchTerm) {
+      query.title = { $regex: searchTerm, $options: "i" };
+    }
+
+    const totalNotices = await Notice.countDocuments(query);
+
+    const notices = await Notice.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      message: "Notice list fetched successfully",
+      data: notices,
+      pagination: {
+        totalItems: totalNotices,
+        totalPages: Math.ceil(totalNotices / limit),
+        currentPage: page,
+        limit,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 
 const getNoticeById = async (req, res) => {
     try{
