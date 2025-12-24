@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +29,7 @@ type NoticeFormData = {
   employeeId: string;
   employeeName: string;
   position: string;
-  noticeTypes: string[];
+  noticeType: string;
   publishDate: string;
   noticeBody: string;
 };
@@ -55,19 +54,15 @@ export default function CreateNotice() {
     register,
     control,
     handleSubmit,
-    watch,
-    setValue,
     formState: { errors },
   } = useForm<NoticeFormData>({
     defaultValues: {
       targetType: "individual",
-      noticeTypes: [],
+      noticeType: "",
     },
   });
 
-  const selectedNoticeTypes = watch("noticeTypes") || [];
-
-const { mutate: postNotice, isPending } = usePostNotice();
+  const { mutate: postNotice, isPending } = usePostNotice();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -104,7 +99,7 @@ const { mutate: postNotice, isPending } = usePostNotice();
       employeeName: data.employeeName,
       title: data.noticeTitle,
       noticeBody: data.noticeBody,
-      noticeType: data.noticeTypes.join(", "),
+      noticeType: data.noticeType,
       position: data.position,
       targetType: data.targetType,
       publishDate: data.publishDate,
@@ -116,15 +111,15 @@ const { mutate: postNotice, isPending } = usePostNotice();
     console.log("FINAL DATA 👉", formattedData);
 
     postNotice(formattedData, {
-    onSuccess: (response) => {
-     console.log("POSTED DATA 👉", response);
-    setShowSuccessModal(true);
-    },
-    onError: (error) => {
-     console.error("POST ERROR 👉", error);
-    alert("Failed to publish notice. Please try again.");
-    },
-});
+      onSuccess: (response) => {
+        console.log("POSTED DATA 👉", response);
+        setShowSuccessModal(true);
+      },
+      onError: (error) => {
+        console.error("POST ERROR 👉", error);
+        alert("Failed to publish notice. Please try again.");
+      },
+    });
   };
 
   return (
@@ -255,60 +250,40 @@ const { mutate: postNotice, isPending } = usePostNotice();
                 <label className="block text-sm font-medium mb-2">
                   <span className="text-red-500">*</span> Notice Type
                 </label>
-                <div className="border rounded-md p-3 bg-white space-y-2 max-h-[250px] overflow-y-auto">
-                  {noticeTypesList.map((type) => (
-                    <div
-                      key={type}
-                      className="flex items-center space-x-2 py-1"
-                    >
-                      <Checkbox
-                        id={`notice-${type}`}
-                        checked={selectedNoticeTypes.includes(type)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setValue("noticeTypes", [...selectedNoticeTypes, type]);
-                          } else {
-                            setValue("noticeTypes", selectedNoticeTypes.filter(t => t !== type));
-                          }
-                        }}
-                      />
-                      <label
-                        htmlFor={`notice-${type}`}
-                        className="text-sm cursor-pointer flex-1"
-                      >
-                        {type}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                {selectedNoticeTypes.length > 0 && (
-                  <div className="mt-2 text-xs text-teal-600 font-medium">
-                    ✓ {selectedNoticeTypes.length} type(s) selected
-                  </div>
-                )}
+                <Controller
+                  control={control}
+                  name="noticeType"
+                  rules={{ required: "Notice type is required" }}
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Notice Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {noticeTypesList.map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">
                   <span className="text-red-500">*</span> Publish Date
                 </label>
-                <Controller
-                  control={control}
-                  name="publishDate"
-                  rules={{ required: "Publish date is required" }}
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Publishing Date" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="today">Today</SelectItem>
-                        <SelectItem value="tomorrow">Tomorrow</SelectItem>
-                        <SelectItem value="custom">Custom Date</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
+                <div className="relative">
+                  <Input
+                    type="date"
+                    className="w-full"
+                    {...register("publishDate", {
+                      required: "Publish date is required",
+                    })}
+                  />
+                </div>
               </div>
             </div>
 
@@ -319,7 +294,7 @@ const { mutate: postNotice, isPending } = usePostNotice();
               </label>
               <Textarea
                 placeholder="Write the details about notice"
-                className="min-h-[180px] w-full resize-none"
+                className="min-h-45 w-full resize-none"
                 {...register("noticeBody")}
               />
             </div>
@@ -330,7 +305,7 @@ const { mutate: postNotice, isPending } = usePostNotice();
                 Upload Attachments (optional)
               </label>
               <div
-                className="border-2 border-dashed border-teal-300 rounded-lg p-12 cursor-pointer hover:border-teal-500 transition-colors bg-teal-50"
+                className="border-2 border-dashed border-gray-300 rounded-lg p-12 cursor-pointer hover:border-teal-500 transition-colors bg-white"
                 onClick={() => fileInputRef.current?.click()}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
@@ -343,8 +318,8 @@ const { mutate: postNotice, isPending } = usePostNotice();
                   onChange={handleFileChange}
                 />
                 <div className="text-center">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-teal-100 mb-3">
-                    <Upload className="w-6 h-6 text-teal-600" />
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3">
+                    <Upload className="w-6 h-6 text-gray-600" />
                   </div>
                   <p className="text-sm text-gray-700">
                     <span className="text-teal-600 font-medium">Upload</span>{" "}
@@ -417,8 +392,8 @@ const { mutate: postNotice, isPending } = usePostNotice();
               Notice Published Successfully
             </DialogTitle>
             <DialogDescription className="text-gray-600 text-base max-w-md">
-              Your notice "Holiday Schedule – November 2025" has been published
-              and is now visible to all selected departments.
+              Your notice has been published and is now visible to all selected
+              departments.
             </DialogDescription>
             <div className="flex gap-3 mt-8">
               <Button
