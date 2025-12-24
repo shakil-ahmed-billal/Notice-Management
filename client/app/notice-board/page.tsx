@@ -61,11 +61,12 @@ interface Pagination {
 /* ================= COMPONENT ================= */
 
 export default function NoticeBoard() {
-
-
   const [filterStatus, setFilterStatus] = useState<
-  "ALL" | "Published" | "Unpublished" | "Draft">("ALL");
-  const [filterDepartment, setFilterDepartment] = useState<"ALL" | string>("ALL");
+    "ALL" | "Published" | "Unpublished" | "Draft"
+  >("ALL");
+  const [filterDepartment, setFilterDepartment] = useState<"ALL" | string>(
+    "ALL"
+  );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const limit = 8;
@@ -106,7 +107,6 @@ export default function NoticeBoard() {
     return colors[dept] || "text-gray-600";
   };
 
-
   return (
     <div className="flex-1 p-6 lg:p-8">
       {/* Header */}
@@ -143,7 +143,7 @@ export default function NoticeBoard() {
               value={filterDepartment}
               onValueChange={setFilterDepartment}
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-50">
                 <SelectValue placeholder="Department" />
               </SelectTrigger>
               <SelectContent>
@@ -160,11 +160,16 @@ export default function NoticeBoard() {
               placeholder="Search title"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-[200px]"
+              className="w-50"
             />
 
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[150px]">
+            <Select
+              value={filterStatus}
+              onValueChange={(value) =>
+                setFilterStatus(
+                  value as "Published" | "Unpublished" | "Draft" | "ALL")}>
+              {" "}
+              <SelectTrigger className="w-35.5">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>

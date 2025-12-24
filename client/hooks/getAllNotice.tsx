@@ -3,12 +3,36 @@
 import { useQuery } from '@tanstack/react-query';
 import useAxiosPublic from './useAxiosPublic';
 
+interface Notice {
+  _id: string;
+  title: string;
+  noticeType: string;
+  position: string;
+  publishedOn: string;
+  status: 'Published' | 'Unpublished' | 'Draft';
+}
+
+interface Pagination {
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  limit: number;
+}
+
+interface NoticeApiResponse {
+  success: boolean;
+  message: string;
+  data: Notice[];
+  pagination: Pagination;
+}
+
+
 interface Params {
   limit: number;
   page: number;
-  filterDepartment: string;
-  filterStatus: string;
-  searchTerm: string;
+  filterDepartment?: string;
+  filterStatus?: string;
+  searchTerm?: string;
 }
 
 const useAllNotice = ({
@@ -20,7 +44,11 @@ const useAllNotice = ({
 }: Params) => {
   const axiosPublic = useAxiosPublic();
 
-  const { data, isLoading, isFetching } = useQuery({
+  const {
+    data,
+    isLoading,
+    isFetching,
+  } = useQuery<NoticeApiResponse>({
     queryKey: [
       'notices',
       limit,
@@ -30,17 +58,33 @@ const useAllNotice = ({
       searchTerm,
     ],
     queryFn: async () => {
-      const res = await axiosPublic(
-        `/api/v1/notices?limit=${limit}&page=${page}&filterDepartment=${filterDepartment}&filterStatus=${filterStatus}&searchTerm=${searchTerm}`
+      const res = await axiosPublic.get<NoticeApiResponse>(
+        `/api/v1/notices`,
+        {
+          params: {
+            limit,
+            page,
+            filterDepartment,
+            filterStatus,
+            searchTerm,
+          },
+        }
       );
       return res.data;
     },
-    keepPreviousData: true,
+
+    // ✅ React Query v5 replacement for keepPreviousData
+    placeholderData: (previousData:any) => previousData,
   });
 
   return {
-    notices: data?.data || [],
-    pagination: data?.pagination || {},
+    notices: data?.data ?? [],
+    pagination: data?.pagination ?? {
+      totalItems: 0,
+      totalPages: 0,
+      currentPage: page,
+      limit,
+    },
     isLoading,
     isFetching,
   };
