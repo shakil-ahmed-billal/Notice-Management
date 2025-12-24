@@ -240,8 +240,8 @@ export default function NoticeBoard() {
                   <TableCell className="font-medium">{notice.title}</TableCell>
                   <TableCell>{notice.noticeType}</TableCell>
                   <TableCell>
-                    <span className={getDepartmentColor(notice.position)}>
-                      {notice.position}
+                    <span className={getDepartmentColor(notice?.position)}>
+                      {notice?.position}
                     </span>
                   </TableCell>
                   <TableCell>

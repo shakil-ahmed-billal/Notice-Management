@@ -31,14 +31,13 @@ export const getAllNotice = async (req, res) => {
 
     const { filterDepartment, filterStatus, searchTerm } = req.query;
 
-    // 🔎 Dynamic filter object
     let query = {};
 
-    if (filterDepartment) {
-      query.position = filterDepartment;
+    if (filterDepartment && filterDepartment !== "all") {
+      query.department = filterDepartment;
     }
 
-    if (filterStatus) {
+    if (filterStatus && filterStatus !== "ALL") {
       query.status = filterStatus;
     }
 
@@ -49,10 +48,11 @@ export const getAllNotice = async (req, res) => {
     const totalNotices = await Notice.countDocuments(query);
 
     const notices = await Notice.find(query)
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 }) 
       .skip(skip)
       .limit(limit);
 
+    // Response
     res.status(200).json({
       success: true,
       message: "Notice list fetched successfully",
@@ -71,6 +71,7 @@ export const getAllNotice = async (req, res) => {
     });
   }
 };
+
 
 
 const getNoticeById = async (req, res) => {
