@@ -14,7 +14,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-   "type": "module" ,
+  "type": "module",
   "bugs": {
     "url": "https://github.com/shakil-ahmed-billal/Notice-Management/issues"
   },
@@ -23,6 +23,8 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.2",
     "morgan": "^1.10.1"
   }
 }
