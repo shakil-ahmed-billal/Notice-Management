@@ -48,6 +48,7 @@ const useAllNotice = ({
     data,
     isLoading,
     isFetching,
+    refetch
   } = useQuery<NoticeApiResponse>({
     queryKey: [
       'notices',
@@ -74,7 +75,7 @@ const useAllNotice = ({
     },
 
     // ✅ React Query v5 replacement for keepPreviousData
-    placeholderData: (previousData:any) => previousData,
+    placeholderData: (previousData) => previousData,
   });
 
   return {
@@ -87,6 +88,7 @@ const useAllNotice = ({
     },
     isLoading,
     isFetching,
+    refetch
   };
 };
 

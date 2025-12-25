@@ -27,6 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useAllNotice from "@/hooks/getAllNotice";
+import useAxiosPublic from "@/hooks/useAxiosPublic";
 import {
   Calendar,
   Edit,
@@ -37,8 +38,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-/* ================= TYPES ================= */
+import toast from "react-hot-toast";
 
 type NoticeStatus = "Published" | "Unpublished" | "Draft";
 
@@ -58,8 +58,6 @@ interface Pagination {
   limit: number;
 }
 
-/* ================= COMPONENT ================= */
-
 export default function NoticeBoard() {
   const [filterStatus, setFilterStatus] = useState<
     "ALL" | "Published" | "Unpublished" | "Draft"
@@ -69,19 +67,12 @@ export default function NoticeBoard() {
   );
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [page, setPage] = useState<number>(1);
+  const [isTogglingStatus, setIsTogglingStatus] = useState(false);
+  const axiosPublic = useAxiosPublic();
+
   const limit = 8;
 
-  const {
-    notices,
-    pagination,
-    isLoading,
-    isFetching,
-  }: {
-    notices: Notice[];
-    pagination: Pagination;
-    isLoading: boolean;
-    isFetching: boolean;
-  } = useAllNotice({
+  const { notices, pagination, isLoading, refetch } = useAllNotice({
     limit,
     page,
     filterDepartment: filterDepartment === "ALL" ? "" : filterDepartment,
@@ -93,6 +84,36 @@ export default function NoticeBoard() {
     setPage(1);
   }, [filterDepartment, filterStatus, searchTerm]);
 
+  const handleToggleStatus = async (
+    noticeId: string,
+    currentStatus: NoticeStatus
+  ) => {
+    const newStatus: NoticeStatus =
+      currentStatus === "Published" ? "Unpublished" : "Published";
+
+    setIsTogglingStatus(true);
+
+    try {
+      const response = await axiosPublic.put(`/api/v1/notices/${noticeId}`, {
+        status: newStatus,
+      });
+
+      console.log(response)
+      if (response) {
+        toast.success(` Notice status updated to ${newStatus}`);
+
+        refetch();
+      } else {
+        toast.error("Failed to update notice status");
+      }
+    } catch (error) {
+      console.error("Error updating notice status:", error);
+      toast.error("Failed to update notice status");
+    } finally {
+      setIsTogglingStatus(false);
+    }
+  };
+
   const getDepartmentColor = (dept: string): string => {
     const colors: Record<string, string> = {
       "All Department": "text-blue-600",
@@ -103,6 +124,11 @@ export default function NoticeBoard() {
       Admin: "text-purple-600",
       Individual: "text-blue-600",
       HR: "text-red-600",
+      finance: "text-green-600",
+      sales: "text-orange-600",
+      hr: "text-red-600",
+      it: "text-blue-600",
+      admin: "text-purple-600",
     };
     return colors[dept] || "text-gray-600";
   };
@@ -143,7 +169,7 @@ export default function NoticeBoard() {
               value={filterDepartment}
               onValueChange={setFilterDepartment}
             >
-              <SelectTrigger className="w-50">
+              <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="Department" />
               </SelectTrigger>
               <SelectContent>
@@ -160,16 +186,18 @@ export default function NoticeBoard() {
               placeholder="Search title"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-50"
+              className="w-[200px]"
             />
 
             <Select
               value={filterStatus}
               onValueChange={(value) =>
                 setFilterStatus(
-                  value as "Published" | "Unpublished" | "Draft" | "ALL")}>
-              {" "}
-              <SelectTrigger className="w-35.5">
+                  value as "Published" | "Unpublished" | "Draft" | "ALL"
+                )
+              }
+            >
+              <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -265,20 +293,31 @@ export default function NoticeBoard() {
                       {notice.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
+                  <TableCell>
+                    <div className="flex items-center justify-end gap-2">
                       {notice.status !== "Draft" && (
-                        <Switch checked={notice.status === "Published"} />
+                        <Switch
+                          checked={notice.status === "Published"}
+                          onCheckedChange={() =>
+                            handleToggleStatus(notice._id, notice.status)
+                          }
+                          disabled={isTogglingStatus}
+                          className="data-[state=checked]:bg-green-500"
+                        />
                       )}
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
                         <Edit className="h-4 w-4" />
                       </Button>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
                             <MoreVertical className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
